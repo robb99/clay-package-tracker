@@ -185,11 +185,11 @@ def _check_usps(tracking_number):
 def remove_package(tracking_number):
     """Remove a package from tracking"""
     packages = load_packages()
-    original_count = len(packages["packages"])
+    original_count = len(packages['packages'])
     
     packages["packages"] = [p for p in packages["packages"] if p["tracking_number"] != tracking_number]
     
-    if len(packages["packages"]) < original_count:
+    if len(packages['packages']) < original_count:
         save_packages(packages)
         print(f"✓ Removed {tracking_number}")
     else:
@@ -243,7 +243,8 @@ def main():
     remove_parser.add_argument("tracking_number", help="Tracking number")
     
     # Status summary
-    subparsers.add_parser("status", help="Quick status summary")
+    status_parser = subparsers.add_parser("status", help="Quick status summary")
+    status_parser.add_argument("--json", action="store_true", help="JSON output")
     
     args = parser.parse_args()
     
@@ -262,12 +263,12 @@ def main():
         
         if args.json:
             print(json.dumps({
-                "total": len(packages["packages"]),
+                "total": len(packages['packages']),
                 "delivered": delivered,
                 "in_transit": in_transit
             }))
         else:
-            print(f"📦 Package Summary: {len(packages["packages"])} total, {delivered} delivered, {in_transit} in transit")
+            print(f"📦 Package Summary: {len(packages['packages'])} total, {delivered} delivered, {in_transit} in transit")
     else:
         parser.print_help()
 
